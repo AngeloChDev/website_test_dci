@@ -54,7 +54,7 @@ hr{
 }
 .boxnews{
     height: 40vh;
-    background-image:url('static/img/logo.jpeg');
+    background-image:url('/static/img/logo.jpeg');
     background-repeat: no-repeat;
     background-size: 55vw 40vh;
     background-position-x: center;
