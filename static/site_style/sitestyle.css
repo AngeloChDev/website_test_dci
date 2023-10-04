@@ -12,6 +12,18 @@ hr{
     height: 15vh;
     width: 100vw;
 }
+.nav-color{
+    background-color:rgba(22,22,22, 0.3);
+}
+.link-box{
+    width:fit-content;
+}
+.nounderline{
+    text-decoration: none;
+}
+.title{
+    color:#727272;
+}
 .logo{
     width: 20%;
     height: 10vh;
@@ -22,15 +34,10 @@ hr{
     background-color: black;
 }
 
-.nounderline{
-    text-decoration: none;
-}
-
 .w-hover:hover{
     color:aliceblue
 
 }
-
 .phrase-welcome{
     text-align: center;
     height: 20vh;
@@ -42,34 +49,9 @@ hr{
     height:10vh;
     font-size: 1em;;
 }
-.nav-color{
-    background-color:rgba(22,22,22, 0.3);
-    
-}
 .transparent{
     background-color: transparent;
 }
-.link-box{
-    width:fit-content;
-}
-.title{
-    color:#727272;
-}
-.imgnews{
-    position: fixed;
-    height: 40vh;
-    width: 50vw;
-    margin: auto;
-}
-.news{
-    color:white;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-.mt-40{
-    margin-top: 40vh;
-
-}
-
 .boxnews{
     height: 40vh;
     background-image:url('/static/img/logo.jpeg');
@@ -78,6 +60,15 @@ hr{
     background-position-x: center;
     margin-bottom: 3em;
 }
+.news-tit{
+    padding-bottom: 0.7em;
+    font-weight: 400;
+}
+.news{
+    color:white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 .news1{
     text-align: left;
     padding-top: 1.7em;
@@ -88,40 +79,10 @@ hr{
     padding-top: 2em;
     padding-right: 2vw;
 }
-.news-tit{
-    padding-bottom: 0.7em;
-    font-weight: 400;
-}
 
-.foot{
-    height: 8vh;
-    width: 100vw;
-    color: aliceblue;
-}
-.copyright{
-    width: 4vw;
-    height: 5vh;
-    align-self: center;
-    margin:auto 1em auto 3em;
-}
-.p-copyright{
-    font-size:.6em;
-    align-self: center;
-    margin:auto 0;
-    
-}
-.foot-menu{
-    font-size: .6em;
-    margin:auto auto auto 5vw;
-}
-.features-box{
-    height:20vh;
-}
 .features-btn{
     margin-left: 10vw;
     font-size: 1.5em;
-    
-    
 }
 .dropdown {
     position: relative;
@@ -155,11 +116,7 @@ hr{
     display: block;
     
 }
- 
 
-
-
- 
 .dropdown-content-games {
     display: none;
     position: absolute;
@@ -199,7 +156,6 @@ hr{
     
 }
 
-
 .tab{
     width: 70vw;
     margin: 0 auto;
@@ -211,6 +167,29 @@ hr{
     font-size: 1em;
     color: whitesmoke;
 }
+
+.foot{
+    height: 8vh;
+    width: 100vw;
+    color: aliceblue;
+}
+.copyright{
+    width: 4vw;
+    height: 5vh;
+    align-self: center;
+    margin:auto 1em auto 3em;
+}
+.p-copyright{
+    font-size:.6em;
+    align-self: center;
+    margin:auto 0;
+    
+}
+.foot-menu{
+    font-size: .6em;
+    margin:auto auto auto 5vw;
+}
+
 
 @media only screen and (max-width: 400px) {
 
