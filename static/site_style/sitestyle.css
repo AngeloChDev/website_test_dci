@@ -13,7 +13,7 @@ hr{
     width: 100vw;
 }
 .f-4{
-    font-size: .7em;
+    font-size: .9em;
 }
 .nav-color{
     background-color:rgba(22,22,22, 0.3);
@@ -55,7 +55,7 @@ hr{
 }
 .h2{
     height:10vh;
-    font-size: 1em;;
+    font-size: 1.2em;;
 }
 .transparent{
     background-color: transparent;
