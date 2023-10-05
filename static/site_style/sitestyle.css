@@ -23,6 +23,7 @@ hr{
 }
 .nounderline{
     text-decoration: none;
+    
 }
 .title{
     color:#727272;
@@ -49,7 +50,11 @@ hr{
     width: 100vw;
     margin:0 auto;
     padding-top: .8em;
+<<<<<<< HEAD
     font-size:1.3em;
+=======
+    font-size: 1em;
+>>>>>>> 0e0fd98 (commit)
 }
 .h2{
     height:10vh;
