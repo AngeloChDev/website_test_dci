@@ -12,6 +12,9 @@ hr{
     height: 15vh;
     width: 100vw;
 }
+.f-4{
+    font-size: .7em;
+}
 .nav-color{
     background-color:rgba(22,22,22, 0.3);
 }
@@ -23,12 +26,18 @@ hr{
 }
 .title{
     color:#727272;
+<<<<<<< HEAD
     margin-right:5vw;
+=======
+    margin-right: 5vw;
+
+>>>>>>> 27db92b (commit)
 }
 .logo{
     width: 20%;
     height: 10vh;
     padding-bottom: 0px;
+    
 }
 
 .black{
