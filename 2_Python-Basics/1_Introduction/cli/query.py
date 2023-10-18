@@ -77,6 +77,7 @@ class UserHelp:
                     order_confirm = input('You want buy th items ? tap yes or no : ')   
                     if order_confirm=='no':
                         self.make_order= False
+                        print(f'Thank you for your visit, {self.username}')
                         return self.make_order
                     elif order_confirm=='yes':
                         n_tobuy=input('How many items you would like to buy ? ')
@@ -89,6 +90,7 @@ class UserHelp:
                             buy_all= input('Do you want to buy the maximum number of items available?')
                             if buy_all=='no':
                                 self.make_order = False
+                                print(f'Thank you for your visit, {self.username}')
                                 return self.make_order
                             elif buy_all=='yes':
                                 print(f'Your order has been placed!\nNumber of item : {n_item_w1 + n_item_w2}\nItem : {user_choose}')
@@ -102,6 +104,7 @@ class UserHelp:
             
         elif int(choose)==3:
             self.make_order = False
+            print(f'Thank you for your visit, {self.username}')
             return self.make_order
         else:
             raise Exception('Some error in the user input')
