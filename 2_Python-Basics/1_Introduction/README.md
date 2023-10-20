@@ -46,7 +46,7 @@ Edit the file `query.py` and write a script that produces the following workflow
         1. Ask the user if they want to place an order for this item.
             1. If the answer is no, it will do nothing else.
             1. If the answer is yes, it should ask the user how many do they want.
-                1. If the desired amount is equal or lower than the total available, it will proceed and show a message saying the order has been placed. *The message should show the item name and amount ordered*.
+                1. If the desired amount is equal or lower than the total available, it will proceed and show a message saying the order has been placed. *The message should show the item name and amount ordered*. 
                 1. If the desired amount is higher than the total available, it should show an error message and should ask the user if they want to order the maximum available, instead.
                     1. If they answer yes, it will proceed and show a message saying the order has been placed. *The message should show the item name and amount ordered*.
                     1. If they answer no, it will do nothing else.
