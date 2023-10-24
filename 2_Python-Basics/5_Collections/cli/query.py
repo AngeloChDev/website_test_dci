@@ -11,7 +11,9 @@ class UserUtils(Task):
       
       def __init__(self):
             super().__init__()
-            self._MENU_ACTIONS= self._Set_Actions('List all items','Search an item and place an order ')
+            self.action1 = 'List all items'
+            self.action2 = 'Search an item and place an order '
+            self._MENU_ACTIONS= self._Set_Actions(self.action1 ,self.action2 )
             self._Order_Loop()
       
       def iter_stock(self,key,item_name=None):
@@ -27,11 +29,11 @@ class UserUtils(Task):
             elif key=='item' and item_name!=None:
                   now= datetime.now()
                   for dictionary in stock:
-                        if dictionary["state"].lower()+' '+dictionary["category"].lower() ==item_name.lower():
+                        d_item= ' '.join([dictionary["state"], dictionary["category"]]).lower()
+                        if d_item ==item_name:
                               dic_data = datetime.strptime(dictionary['date_of_stock'],'%Y-%m-%d %H:%M:%S')
                               days=now - dic_data
                               dictionary['date_of_stock']= days.days
-                              print(dictionary['date_of_stock'])
                               if dictionary["warehouse"]==1:
                                     out[1].append(dictionary)
                               elif dictionary["warehouse"]==2:
@@ -71,5 +73,8 @@ class UserUtils(Task):
             else:
                   print('Not in stock')
                   return True
+      
+      def _Action3(self):
+            pass
 
 UserUtils()
