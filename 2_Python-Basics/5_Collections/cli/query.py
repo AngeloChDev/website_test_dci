@@ -59,19 +59,19 @@ class UserUtils(Task):
             d2=[list(j.values()) for j in Warehouses[2]]
             L_w1, L_w2 = len(Warehouses[1]), len(Warehouses[2])
             availble_items = L_w1 + L_w2
-            print(f'Amount available: {availble_items }')
+            print(f'\nAmount available: {availble_items }')
             TAB=tabulate([ *d1, *d2 ], headers=['status', 'category', 'warehouse', 'days in stock'])
             print('Location:\n',TAB)
             if L_w1 > 0 or L_w2 > 0:
                   if L_w1 > L_w2:
-                        print(f'Maximum availability: {L_w1} in Warehouse 1')
+                        print(f'\nMaximum availability: {L_w1} in Warehouse 1')
                   elif L_w2 > L_w1:
-                        print(f'Maximum availability: {L_w2} in Warehouse 2')
+                        print(f'\nMaximum availability: {L_w2} in Warehouse 2')
                   else:
-                        print(f'Maximum availability: {available_items} ')
+                        print(f'\nMaximum availability: {available_items} ')
                   return self._Confirm_Order(obj,availble_items)
             else:
-                  print('Not in stock')
+                  print('\nNot in stock')
                   return True
       
       def _Action3(self):
