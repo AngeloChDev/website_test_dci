@@ -4,7 +4,7 @@ class Task(ABC):
 
       def __init__(self):
             self.USERS=[]
-            self.session = {'need_login':False, "logged":False}
+            self.session = {'need_login':False, "logged":False, "category":dict(), 'cache': []}
             self.action1 = ''
             self.action2 = ''
             self.action3 = None
@@ -22,6 +22,7 @@ class Task(ABC):
       
       def login(self):
             passwd = input('\nWrite your password :')
+            self.session['cache'].append(f'You tried to login whith password : {passwd}')
             for i in self.USERS:
                   if self.username==i['user_name'] and passwd==i['password']:
                         return True
@@ -29,8 +30,22 @@ class Task(ABC):
                         for j in i['head_of']:
                               if j['user_name']==self.username and j['password']==passwd:
                                     return True
-                  
+            self.session['cache'].append('Login refused')
             return False
+      
+      def shoot_down(self):
+            if self.session["need_login"]:
+                  continue_ = input('You want to continue ? yes / no\n')
+                  if continue_=='yes':
+                        self.session['cache'].append('You procede')
+                        return True
+                  elif continue_=='no':
+                        self.session['cache'].append('You are shooting down the software')
+                        print(*self.session['cache'], sep='\n')
+            print(f'\nThank you for your visit, {self.username}')
+            return False
+            
+                  
             
       def _Greet_User(self):
             return print(f'\nWelcome {self.username}')
@@ -41,7 +56,7 @@ class Task(ABC):
                   action= int(user_action)
             except Exception as e:
                   print(e)
-                  return True
+                  return self.shoot_down()
                   
             if action==1:
                   return self._Action1()
@@ -49,18 +64,18 @@ class Task(ABC):
                   obj = input('\nWhat is the name of the item?  ').strip()
                   return self._Action2(obj.lower())
             elif self.action3==None and action==3:
-                  return print(f'\nThank you for your visit, {self.username}')
+                  return self.shoot_down()
             elif self.action3 != None:
                   if action==3:
                         return self._Action3()
                   elif action==4:
-                        return print(f'\nThank you for your visit, {self.username}')
+                        return self.shoot_down()
                   else:
                         print('Action input value not valid')
-                        return True
+                        return self.shoot_down()
             else:
                   print('Action input value not valid')
-                  return True
+                  return self.shoot_down()
                   
       def _Order_Loop(self):
             x=True
@@ -82,34 +97,36 @@ class Task(ABC):
       def _Confirm_Order(self, item_tobuy, item_disponible):
             order_confirm = input('\nYou want buy some of this items ? tap yes or no :\n')   
             if order_confirm=='no':
-                  print(f'\nThank you for your visit, {self.username}')
-                  return False
+                  self.session['cache'].append('You refused to buy')
+                  return self.shoot_down()
             elif order_confirm=='yes':
+                  self.session['cache'].append('You accepted to buy')
                   if self.session["need_login"]==True:
-                        chance= 0
-                        while chance < 3 and self.session["logged"]==False: 
+                        while self.session["logged"]==False: 
                               self.session["logged"] = self.login()
-                              chance+=1
-                        if chance>=3:
-                              return self._Order_Loop()
+                  self.session['cache'].append('Login accepted')
                   n_tobuy=input('\nHow many items you would like to buy ? \n')
                   if int(n_tobuy) <= item_disponible:
                         print(f'\nYour order has been placed!\nNumber of item : {n_tobuy}\nItem : {item_tobuy}')
-                        return True
+                        self.session['cache'].append(f'You had bought : {n_tobuy} ; {item_tobuy}')
+                        return self.shoot_down()
                   elif int(n_tobuy) > item_disponible:
                         print('\nYou choosed a number of items more hight than the number of items in stock')
                         buy_all= input('Do you want to buy the maximum number of items available? tap yes or no\n')
+                        self.session['cache'].append('You selected a number of items not in stock')
                         if buy_all=='no':
-                              print(f'\nThank you for your visit, {self.username}')
-                              return False
+                              self.session['cache'].append('You refused to buy the dsponible number of items')
+                              return self.shoot_down()
                         elif buy_all=='yes':
                               print(f'\nYour order has been placed!\nNumber of item : {item_disponible}\nItem : {item_tobuy}\n')
-                              return True
+                              self.session['cache'].append(f'You accepted to buy the dsponible number of items : {item_disponible} ; {item_tobuy}')
+                              
+                              return self.shoot_down()
                   else:
                         print(ValueError('ValueError in number of items input')) 
-                        return True
+                        return self.shoot_down()
             else:
                   print(ValueError('Error in order confirmation input'))
-                  return True
+                  return self.shoot_down()
             
             

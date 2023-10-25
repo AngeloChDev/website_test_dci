@@ -13,11 +13,12 @@ class UserUtils(Task):
             super().__init__()
             self.action1 = 'List all items'
             self.action2 = 'Search an item and place an order '
-            self._MENU_ACTIONS= self._Set_Actions(self.action1 ,self.action2 )
+            self.action3 = '3-Browse by category\n' 
+            self._MENU_ACTIONS= self._Set_Actions(self.action1 ,self.action2, self.action3 )
             self._Order_Loop()
       
-      def iter_stock(self,key,item_name=None):
-            out = {1:[], 2:[], 'error':[]}
+      def iter_stock(self,key,item_name=None, category_selected=None):
+            out = {1:[], 2:[], 'category':[], 'error':[]}
             if key=='warehouse':
                   for dictionary in stock:
                         if dictionary["warehouse"]==1:
@@ -40,6 +41,12 @@ class UserUtils(Task):
                                     out[2].append(dictionary)
                               else:
                                     out['error'].append(dictionary)
+            elif key=='category' and category_selected!=None:
+                  self.session["category"][category_selected] = []
+                  for i in stock:
+                        if i["category"].lower()==category_selected:
+                              self.session["category"][category_selected].append(i)
+                  return self
             else:
                   raise Exception('Some rror in date input to search item')
             return out
@@ -49,7 +56,8 @@ class UserUtils(Task):
             tab_1=tabulate([list(i.values()) for i in out[1]], headers=['status', 'category', 'warehouse', 'date of stock'])
             tab_2=tabulate([list(i.values()) for i in out[2]], headers=['status', 'category', 'warehouse', 'date of stock'])
             TAB=tabulate([[tab_1, tab_2]], headers=['   WAREHOUSE  1','     WAREHOUSE   2'], tablefmt="pipe")
-            print('TAB\n',TAB)
+            tot = len(out[1]) +  len(out[2])
+            print('TAB\n',TAB, f'\nTotal items{tot}')
             print(f"An error was found in this data: {out['error']}" if len(out['error'])>0 else '')
             return True
       
@@ -75,6 +83,14 @@ class UserUtils(Task):
                   return True
       
       def _Action3(self):
-            pass
+            category_selected = input('Choose a category :').lower()
+            if category_selected not in list(self.session["category"].keys()):
+                  self.iter_stock('category',category_selected=category_selected)
+            print(f'Category Selected : {category_selected}')
+            tab_category_val=[list(i.values())for i in self.session['category'][category_selected]]
+            TAB =tabulate(tab_category_val,['Status', 'Category', 'Warehouse', 'Date of stock'])
+            print(TAB, f'\nItem founded : {len(tab_category_val)}')
+            return True
+            
 
 UserUtils()
