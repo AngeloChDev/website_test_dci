@@ -23,12 +23,6 @@ class SignedUser(Task):
             if key=='all':
                   tab_all=[list(i.values()) for i in stock]
                   return tab_all
-            elif key=='category' and category_selected!=None:
-                  self.session["category"][category_selected] = list()
-                  for i in stock:
-                        if category_selected==i["category"].lower():
-                              self.session["category"][category_selected].append(i)
-                  return self
             elif key=='item' and item!=None:
                   d = dict()
                   for i in stock:
@@ -40,6 +34,19 @@ class SignedUser(Task):
                         else:
                               pass
                   return d
+            elif key=='category':
+                  for i in stock:
+                        if i["category"] not in self.session["category"].keys():
+                              self.session["category"][i['category']] = 1
+                        else:
+                              self.session["category"][i['category']] += 1
+                  return self
+            elif key=='obj_category' and category_selected!=None:
+                  out=[]
+                  for i in stock:
+                        if category_selected==i["category"]:
+                              out.append(i)
+                  return out
             else:
                   print('error in sort stock funcion')
                   return True
@@ -48,7 +55,7 @@ class SignedUser(Task):
             tab_all_val = self.stock_sort('all')
             TAB = tabulate(tab_all_val,['state', 'category', 'warehouse', 'date of stock'])
             print(TAB, f'\nItems :{len(tab_all_val)}')
-            self.session['cache'].append(f'You have viewed the stock  {len(tab_all_val)}')
+            self.session['cache'].append(f'You have listed the full stock  {len(tab_all_val)} items')
             return True
       
       def _Action2(self, user_choose):
@@ -56,18 +63,29 @@ class SignedUser(Task):
             tot = sum(list(res.values()))
             for k, v in res.items():
                   print(f'Amount available {v} in  Warehouse {k}')
-            self.session['cache'].append(f'You serced {user_choose}; ware found {tot} itrms')
+            self.session['cache'].append(f'You searched {user_choose}; ware found {tot} itrms')
             return self._Confirm_Order(user_choose, tot )
       
       def _Action3(self):
-            category_selected = input('Choose a category :').lower()
-            if category_selected  not in list(self.session["category"].keys()):
-                  self.stock_sort('category',category_selected=category_selected)
-            print(f'Category Selected : {category_selected}\n{self.session["category"]}')
-            tab_category_val=[list(i.values())for i in self.session['category'][category_selected]]
-            TAB =tabulate(tab_category_val,['Status', 'Category', 'Warehouse', 'Date of stock'])
-            print(TAB, f'\nItem founded : {len(tab_category_val)}')
-            self.session['cache'].append(f'you have viewed the items in the {category_selected} category; ware found {len(tab_category_val)} items')
-            return True
-                              
+            if len(self.session["category"].items()) < 1:
+                  self.stock_sort('category')
+            n=0
+            for k,v in self.session["category"].items():
+                  n+=1
+                  print(f'{n}-{k} ({v})') 
+                  
+            self.session['cache'].append(f'You listed the available categories')
+            list_category_obj = list(self.session["category"].keys())
+            n_category = len(list_category_obj)
+            action = input('Type the number of the category to browse:')
+            while not action.isnumeric() or int(action) not in range(1,n_category+1):
+                  action = input('Type the number of the category to browse:')
+            selected = int(action)
+            category = list_category_obj[selected-1]
+            obj_selected = self.stock_sort('obj_category', category_selected=category)
+            print(f'List of {category} available :')
+            self.session['cache'].append(f'You searched {category} category')
+            for obj in obj_selected:
+                  print(f"{obj['state']} {obj['category']}, Warehouse {obj['warehouse']} ")
+            return self.shoot_down()              
 SignedUser()

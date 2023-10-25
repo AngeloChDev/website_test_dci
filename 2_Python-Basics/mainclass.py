@@ -106,6 +106,8 @@ class Task(ABC):
                               self.session["logged"] = self.login()
                   self.session['cache'].append('Login accepted')
                   n_tobuy=input('\nHow many items you would like to buy ? \n')
+                  while not n_tobuy.isnumeric() or int(n_tobuy) <= 0:
+                        n_tobuy=input('\nHow many items you would like to buy? \nPlease enter a numerical input greater than 0')
                   if int(n_tobuy) <= item_disponible:
                         print(f'\nYour order has been placed!\nNumber of item : {n_tobuy}\nItem : {item_tobuy}')
                         self.session['cache'].append(f'You had bought : {n_tobuy} ; {item_tobuy}')
@@ -122,9 +124,9 @@ class Task(ABC):
                               self.session['cache'].append(f'You accepted to buy the dsponible number of items : {item_disponible} ; {item_tobuy}')
                               
                               return self.shoot_down()
-                  else:
-                        print(ValueError('ValueError in number of items input')) 
-                        return self.shoot_down()
+                        else:
+                              print(ValueError('ValueError in confirmation input')) 
+                              return self.shoot_down()
             else:
                   print(ValueError('Error in order confirmation input'))
                   return self.shoot_down()

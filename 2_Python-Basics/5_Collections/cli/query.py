@@ -27,6 +27,7 @@ class UserUtils(Task):
                               out[2].append(dictionary)
                         else:
                               out['error'].append(dictionary)
+                  return out
             elif key=='item' and item_name!=None:
                   now= datetime.now()
                   for dictionary in stock:
@@ -41,35 +42,39 @@ class UserUtils(Task):
                                     out[2].append(dictionary)
                               else:
                                     out['error'].append(dictionary)
-            elif key=='category' and category_selected!=None:
-                  self.session["category"][category_selected] = []
+                  return out
+            elif key=='category':
                   for i in stock:
-                        if i["category"].lower()==category_selected:
-                              self.session["category"][category_selected].append(i)
+                        if i["category"] not in self.session["category"].keys():
+                              self.session["category"][i['category']] = 1
+                        else:
+                              self.session["category"][i['category']] += 1
                   return self
+            elif key=='obj_category' and category_selected!=None:
+                  for i in stock:
+                        if category_selected==i["category"]:
+                              out['category'].append(i)
+                  return out['category']
             else:
                   raise Exception('Some rror in date input to search item')
-            return out
       
       def _Action1(self):
             out = self.iter_stock(key='warehouse')
-            tab_1=tabulate([list(i.values()) for i in out[1]], headers=['status', 'category', 'warehouse', 'date of stock'])
-            tab_2=tabulate([list(i.values()) for i in out[2]], headers=['status', 'category', 'warehouse', 'date of stock'])
-            TAB=tabulate([[tab_1, tab_2]], headers=['   WAREHOUSE  1','     WAREHOUSE   2'], tablefmt="pipe")
-            tot = len(out[1]) +  len(out[2])
-            print('TAB\n',TAB, f'\nTotal items{tot}')
+            tab_1=tabulate([[i['warehouse'], i['date_of_stock']] for i in out[1]], headers=[ 'warehouse', 'date of stock'])
+            tab_2=tabulate([[i['warehouse'], i['date_of_stock']] for i in out[2]], headers=['warehouse', 'date of stock'])
+            TAB=tabulate([[tab_1, tab_2]], headers=['   WAREHOUSE  1','     WAREHOUSE   2'], tablefmt="pipe",)
+            print('TAB\n',TAB, f'\nTotal items in warehouse\n 1 : {len(out[1])}\nTotal items in warehouse\n 2 : {len(out[2])}')
             print(f"An error was found in this data: {out['error']}" if len(out['error'])>0 else '')
-            return True
+            return self.shoot_down()
       
       def _Action2(self, obj):
             Warehouses = self.iter_stock('item', obj)
-            d1=[list(i.values()) for i in Warehouses[1]]
-            d2=[list(j.values()) for j in Warehouses[2]]
             L_w1, L_w2 = len(Warehouses[1]), len(Warehouses[2])
-            availble_items = L_w1 + L_w2
-            print(f'\nAmount available: {availble_items }')
-            TAB=tabulate([ *d1, *d2 ], headers=['status', 'category', 'warehouse', 'days in stock'])
-            print('Location:\n',TAB)
+            available_items = L_w1 + L_w2
+            print(f'\nAmount available: {available_items }\nLocation: ')
+            for w in Warehouses.keys():
+                  for v in Warehouses[w]:
+                        print(f'-Warehouse {w} ( in stock for {v["date_of_stock"]} days)')
             if L_w1 > 0 or L_w2 > 0:
                   if L_w1 > L_w2:
                         print(f'\nMaximum availability: {L_w1} in Warehouse 1')
@@ -77,20 +82,30 @@ class UserUtils(Task):
                         print(f'\nMaximum availability: {L_w2} in Warehouse 2')
                   else:
                         print(f'\nMaximum availability: {available_items} ')
-                  return self._Confirm_Order(obj,availble_items)
+                  return self._Confirm_Order(obj,available_items)
             else:
                   print('\nNot in stock')
                   return True
       
       def _Action3(self):
-            category_selected = input('Choose a category :').lower()
-            if category_selected not in list(self.session["category"].keys()):
-                  self.iter_stock('category',category_selected=category_selected)
-            print(f'Category Selected : {category_selected}')
-            tab_category_val=[list(i.values())for i in self.session['category'][category_selected]]
-            TAB =tabulate(tab_category_val,['Status', 'Category', 'Warehouse', 'Date of stock'])
-            print(TAB, f'\nItem founded : {len(tab_category_val)}')
-            return True
+            if len(self.session["category"].items()) < 1:
+                  self.stock_sort('category')
+            n=0
+            for k,v in self.session["category"].items():
+                  n+=1
+                  print(f'{n}-{k} ({v})') 
+            list_category_obj = list(self.session["category"].keys())
+            n_category = len(list_category_obj)
+            action = input('Type the number of the category to browse:')
+            while not action.isnumeric() or int(action) not in range(1,n_category+1):
+                  action = input('Type the number of the category to browse:')
+            selected = int(action)
+            category = list_category_obj[selected-1]
+            obj_selected = self.stock_sort('obj_category', category_selected=category)
+            print(f'List of {category} available :')
+            for obj in obj_selected:
+                  print(f"{obj['state']} {obj['category']}, Warehouse {obj['warehouse']} ")
+            return self.shoot_down()  
             
 
 UserUtils()
