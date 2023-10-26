@@ -42,6 +42,7 @@ class Task(ABC):
                   elif continue_=='no':
                         self.session['cache'].append('You are shooting down the software')
                         print(*self.session['cache'], sep='\n')
+                        del self.session 
             print(f'\nThank you for your visit, {self.username}')
             return False
             
