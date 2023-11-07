@@ -1,13 +1,11 @@
-from data import stock
+from cli.Milestone_5.data import stock
 from tabulate import tabulate
 import datetime as D
 from datetime import datetime
-import os , sys
-cwd = os.getcwd()
-sys.path.append(cwd)
-from mainclass import Task
+from ..mainclass import MasterWarehouse
 
-class UserUtils(Task):
+
+class WarehouseUserUtils(MasterWarehouse):
       
       def __init__(self):
             super().__init__()
@@ -108,4 +106,4 @@ class UserUtils(Task):
             return self.shoot_down()  
             
 
-UserUtils()
+WarehouseUserUtils()

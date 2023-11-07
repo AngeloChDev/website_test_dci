@@ -1,11 +1,8 @@
 from data import personnel, stock
 from tabulate import tabulate
-import os , sys
-cwd = os.getcwd()
-sys.path.append(cwd)
-from mainclass import Task
+from ..mainclass import MasterWarehouse
 
-class SignedUser(Task):
+class WarehouseUserReg(MasterWarehouse):
       
       def __init__(self):
             super().__init__()
@@ -88,4 +85,6 @@ class SignedUser(Task):
             for obj in obj_selected:
                   print(f"{obj['state']} {obj['category']}, Warehouse {obj['warehouse']} ")
             return self.shoot_down()              
-SignedUser()
+
+
+WarehouseUserReg()

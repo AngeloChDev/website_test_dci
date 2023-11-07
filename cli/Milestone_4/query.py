@@ -1,16 +1,13 @@
-from data import warehouse1, warehouse2
+from cli.Milestone_4.data import warehouse1, warehouse2
+from ..mainclass import MasterWarehouse
 from tabulate import tabulate
-import os , sys
-cwd = os.getcwd()
-sys.path.append(cwd)
-from mainclass import Task
 
-class UserHelp(Task):
+class Warehouse(MasterWarehouse):
 
     def __init__(self) -> str:
         super().__init__()
         self.action1 = 'List items by warehouse'
-        self.action1 = 'Search an item and place an order'
+        self.action2 = 'Search an item and place an order'
         self.warehouses = [warehouse1, warehouse2]
         self.warehouse_name = ['Warehouse 1', 'Warehouse 2']
         self._MENU_ACTIONS = self._Set_Actions(self.action1, self.action2)
@@ -50,4 +47,4 @@ class UserHelp(Task):
     def _Action3(self):
         pass
 
-UserHelp()
+Warehouse()

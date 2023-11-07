@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class Task(ABC):
+class MasterWarehouse(ABC):
 
       def __init__(self):
             self.USERS=[]
