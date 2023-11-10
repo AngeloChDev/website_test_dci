@@ -1,8 +1,12 @@
-from cli.Milestone_5.data import stock
 from tabulate import tabulate
 import datetime as D
 from datetime import datetime
-from ..mainclass import MasterWarehouse
+import os, sys
+cwd = os.getcwd()
+sys.path.append(cwd)
+from mainclass import MasterWarehouse
+from Milestone_5.data import stock
+
 
 
 class WarehouseUserUtils(MasterWarehouse):
@@ -11,9 +15,9 @@ class WarehouseUserUtils(MasterWarehouse):
             super().__init__()
             self.action1 = 'List all items'
             self.action2 = 'Search an item and place an order '
-            self.action3 = '3-Browse by category\n' 
-            self._MENU_ACTIONS= self._Set_Actions(self.action1 ,self.action2, self.action3 )
-            self._Order_Loop()
+            self.action3 = 'Browse by category' 
+            
+            
       
       def iter_stock(self,key,item_name=None, category_selected=None):
             out = {1:[], 2:[], 'category':[], 'error':[]}
@@ -105,5 +109,6 @@ class WarehouseUserUtils(MasterWarehouse):
                   print(f"{obj['state']} {obj['category']}, Warehouse {obj['warehouse']} ")
             return self.shoot_down()  
             
-
-WarehouseUserUtils()
+if __name__ == '__main__':
+      w = WarehouseUserUtils()
+      w._Order_Loop()

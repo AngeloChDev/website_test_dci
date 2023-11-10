@@ -1,6 +1,11 @@
-from cli.Milestone_4.data import warehouse1, warehouse2
-from ..mainclass import MasterWarehouse
+import os, sys
+cwd = os.getcwd()
+sys.path.append(cwd)
+from mainclass import MasterWarehouse
+from Milestone_4.data import warehouse1, warehouse2
+
 from tabulate import tabulate
+
 
 class Warehouse(MasterWarehouse):
 
@@ -10,8 +15,8 @@ class Warehouse(MasterWarehouse):
         self.action2 = 'Search an item and place an order'
         self.warehouses = [warehouse1, warehouse2]
         self.warehouse_name = ['Warehouse 1', 'Warehouse 2']
-        self._MENU_ACTIONS = self._Set_Actions(self.action1, self.action2)
-        self._Order_Loop()
+        self._MENU_ACTIONS = self._Set_Actions([self.action1, self.action2])
+        #self._Order_Loop()
     
     def _Action1(self):
         tab = tabulate([[ w1 , w2] for w1,w2 in zip(*self.warehouses)], headers=self.warehouse_name)
@@ -47,4 +52,8 @@ class Warehouse(MasterWarehouse):
     def _Action3(self):
         pass
 
-Warehouse()
+if __name__ == "__main__":
+    w = Warehouse()
+    w._Order_Loop()
+
+    

@@ -1,9 +1,10 @@
 from typing import Any, Union
+import datetime
 import unittest, os, sys
 cwd = os.getcwd()
 sys.path.append(cwd)
 from Milestone_7.data import personnel, stock
-import datetime
+
 logs=personnel
 guest_users = []
 class Warehouse:
@@ -44,8 +45,9 @@ class Warehouse:
       
       def search(self, search_term:str)->list:
             output=[]
+            term = search_term.lower()
             for itm in self.stock:
-                  if search_term in itm.values() :
+                  if term in itm.values() :
                         output.append(itm)
             return output
                    
@@ -54,6 +56,9 @@ class Item:
             self.state = state
             self.category = category
             self.date_of_stock = date_of_stock
+            
+      def values(self):
+            return [self.state.lower(), self.category.lower(), self.date_of_stock]
       
       def __str__(self) -> str:
             return f'{self.state} {self.category}'
@@ -91,10 +96,10 @@ class User:
       
 class Employee(User):
       
-      def __init__(self,user_name:str=None, password:str=None, head_of:list=None, is_authenticated:bool=False):
+      def __init__(self,user_name:str=None, password:str=None, head_of:list=[], is_authenticated:bool=False):
             super().__init__(user_name, password, is_authenticated)
             self.__actions = []
-            self.head_of = head_of
+            self.head_of = head_of if user_name is not None  else None
       
       def authenticate(self, password:str, list_employee:list=logs)-> bool:
             try:
@@ -128,7 +133,7 @@ e = Employee('Boris')
 print(e.is_authenticated) 
 e.authenticate('docker')
 print(e.is_authenticated) '''
-'''L=[]
+"""L=[]
 for i in range(1,5):
       w= Warehouse(i)
       L.append(w)
@@ -146,5 +151,7 @@ for k in L:
                   print(o,sep='\n')
 
             print(k.occupancy())
+            
+            print(k.search('exceptional'))
 
-'''
+"""

@@ -1,6 +1,9 @@
-from data import personnel, stock
 from tabulate import tabulate
-from ..mainclass import MasterWarehouse
+import os, sys
+cwd = os.getcwd()
+sys.path.append(cwd)
+from mainclass import MasterWarehouse
+from Milestone_6.data import personnel, stock
 
 class WarehouseUserReg(MasterWarehouse):
       
@@ -10,10 +13,9 @@ class WarehouseUserReg(MasterWarehouse):
             self.USERS = personnel
             self.action1='List all items'
             self.action2 = 'Search an item and place an order '
-            self.action3 = '3-Browse by category\n'
-            self._MENU_ACTIONS= self._Set_Actions(self.action1 ,self.action2 , self.action3 )
+            self.action3 = 'Browse by category'
+            #self._MENU_ACTIONS= self._Set_Actions([self.action1 ,self.action2 , self.action3] )
             self.session['cache'].append(f'Cache start session {self.username}')
-            self._Order_Loop()
       
       
       def stock_sort(self, key, item=None, category_selected=None):
@@ -86,5 +88,6 @@ class WarehouseUserReg(MasterWarehouse):
                   print(f"{obj['state']} {obj['category']}, Warehouse {obj['warehouse']} ")
             return self.shoot_down()              
 
-
-WarehouseUserReg()
+if __name__ == '__main__':
+      w = WarehouseUserReg()
+      w._Order_Loop()

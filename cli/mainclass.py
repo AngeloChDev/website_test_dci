@@ -8,16 +8,28 @@ class MasterWarehouse(ABC):
             self.action1 = ''
             self.action2 = ''
             self.action3 = None
+            self.username = self.get_user()
+            
+      
+      def get_user(self):
             self.username = input('Give a username : ')
             self._Greet_User()
-      
-      def _Set_Actions(self, A1, A2, A3=None):
-            if A3==None:
+            return self.username
+      @staticmethod
+      def _Set_Actions(actions):# A1, A2, A3=None, *args):
+            """if A3==None:
                   quit_action = '3'
                   A3=''
+            else:, 'Place a order']
+                  quit_action='4'"""
+            _MENU_ACTIONS='select one action:'
+            if isinstance(actions, list):
+                  for i, j in zip(actions, range(1,len(actions)+1)):
+                        if i is not None:
+                              _MENU_ACTIONS+='\n{}- {}'.format(j, i)
+                  _MENU_ACTIONS+=f'\n{len(actions)+1}- Quit\n'
             else:
-                  quit_action='4'
-            _MENU_ACTIONS='select one action:\n1-{} \n2-{}\n{}{}- Quit\n'.format(A1, A2,A3,quit_action)
+                  _MENU_ACTIONS+=f'\n1-{actions} \n2- Quit\n'
             return _MENU_ACTIONS
       
       def login(self):
@@ -79,6 +91,7 @@ class MasterWarehouse(ABC):
                   return self.shoot_down()
                   
       def _Order_Loop(self):
+            self._MENU_ACTIONS= self._Set_Actions([self.action1 ,self.action2, self.action3] )
             x=True
             while x :
                   x = self._Menu()
@@ -100,7 +113,7 @@ class MasterWarehouse(ABC):
             if order_confirm=='no':
                   self.session['cache'].append('You refused to buy')
                   return self.shoot_down()
-            elif order_confirm=='yes':
+            if order_confirm=='yes':
                   self.session['cache'].append('You accepted to buy')
                   if self.session["need_login"]==True:
                         while self.session["logged"]==False: 
