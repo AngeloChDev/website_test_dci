@@ -1,8 +1,9 @@
 import unittest, os, sys, datetime
+from unittest.mock import patch, Mock
 from datetime import datetime as Date
 cwd = os.getcwd()
 sys.path.append(cwd)
-from Milestone_7 import query2
+from Milestone_7 import query2, service
 import importlib
 ################################################################
       # MOCK TEST
@@ -10,10 +11,10 @@ from contextlib import contextmanager
 
 @contextmanager
 def mock_input(mock):
-    original_input = __builtins__.input
-    __builtins__.input = lambda _: mock
-    yield
-    __builtins__.input = original_input
+      original_input = __builtins__.input
+      __builtins__.input = lambda _: mock
+      yield
+      __builtins__.input = original_input
 
 
 @contextmanager
@@ -48,7 +49,7 @@ class TestLoader(unittest.TestCase):
             anonymous = self.module.User()
             frank_user = self.module.User(user_name='Frank')
             pass_user = self.module.User(user_name='Jim', password='pass123')
-            #test anonymous user
+            #test anonymous user, 'Franc']
             self.assertEqual(anonymous._name, 'Anonymous' )
             self.assertFalse(anonymous.is_authenticated)
             self.assertFalse(anonymous.authenticate('Anony123'))
@@ -82,7 +83,7 @@ class TestLoader(unittest.TestCase):
             
       def test_Warehouse(self):
             warehouse_noid = self.module.Warehouse()
-            warehouse = self.module.Warehouse(id=3)
+            warehouse = self.module.Warehouse(new_id=3)
             obj = {'state':'new','category': 'mouse', 'date_of_stock': datetime.datetime(2020, 1, 1)}
             item = self.module.Item(**obj)
             obj2 = {'state':'Almost new','category': 'desktop', 'date_of_stock': datetime.datetime(2020, 1, 1)}
@@ -90,13 +91,13 @@ class TestLoader(unittest.TestCase):
             self.assertIsNone(warehouse_noid._id)
             self.assertEqual(warehouse._id, 3)
             self.assertListEqual(warehouse.stock, [])
-            self.assertEqual(warehouse.occupancy(), len(warehouse.stock))
+            self.assertEqual(warehouse.occupancy, len(warehouse.stock))
             warehouse.add_item(item)
             warehouse.add_item(item2)
-            self.assertEqual(warehouse.occupancy(), 2)
-            self.assertListEqual(warehouse.search('almost new'),[ item2])
-            self.assertListEqual(warehouse.search('desktop'),[ item2])
-            self.assertListEqual(warehouse.search('DESKTOP'),[ item2])
+            self.assertEqual(warehouse.occupancy, 2)
+            self.assertListEqual(warehouse.search('new mouse'),[item])
+            self.assertListEqual(warehouse.search('Almost NEW desktop'), [item2])
+            self.assertListEqual(warehouse.search('ALMOST NEW DESKTOP'), [item2])
             
       def test_Item(self):
             obj = {'state':'Almost new','category': 'Desktop', 'date_of_stock': datetime.datetime(2020, 1, 1)}
@@ -109,35 +110,61 @@ class TestLoader(unittest.TestCase):
       def test_Query(self):
             with mock_input('Guest'):
                   guest_user = query2.get_user() 
-                  self.assertEqual(guest_user._name, 'Guest')
-                  self.assertTrue(isinstance(guest_user, self.module.User))
-                  self.assertFalse(isinstance(guest_user, self.module.Employee))
+            self.assertEqual(guest_user._name, 'Guest')
+            self.assertTrue(isinstance(guest_user, self.module.User))
+            self.assertFalse(isinstance(guest_user, self.module.Employee))
+            query2.username=''
+
+      def test_query_employe(self):      
             with mock_input('Jeremy'):
                   employee_user = query2.get_user() 
-                  self.assertEqual(employee_user._name, 'Jeremy')
-                  self.assertTrue(isinstance(employee_user, self.module.User))
-                  self.assertTrue(isinstance(employee_user, self.module.Employee))
-            #W._Confirm_Order('Desktop', 6)
+            self.assertEqual(employee_user._name, 'Jeremy')
+            self.assertTrue(isinstance(employee_user, self.module.User))
+            self.assertTrue(isinstance(employee_user, self.module.Employee))
+            query2.username=''
+            
       def test_get_selected_operation(self):
             answer=[]
             with mock_input(1):
                   with mock_output(answer):
-                        query2._Menu()      
+                        query2._Menu() 
                         query2._Action1()
-               
-            self.assertEqual(answer[0] + answer[1], answer[2] + answer[3])
+            self.assertEqual(answer[0][-1] , answer[1][-1])
             self.assertEqual(query2._Menu.ACTIONS , query2.MENU_ACTIONS)
-                  
-                  #print('K',answer)
-            #out = query2._Action1()
-            #self.assertEqual(answer[0], out)
+
+      def test_list_items_by_warehouse(self):
+            self.assertEqual(query2._Action1()[0], "Listed 5000 items\n")
+            self.assertEqual(''.join(query2._Action1()[1]),"Total items in warehouse 1:\n1346\nTotal items in warehouse 2:\n1258\nTotal items in warehouse 3:\n1173\nTotal items in warehouse 4:\n1223\n")
+
+      
+      def test_search_item(self):
+            data =service.house_run(search_item='original monitor')
+            warehouses = data[0]
+            found_h1 = len(warehouses[1].search('original monitor'))
+            found_h2 = len(warehouses[2].search('original monitor'))
+            found_h3 = len(warehouses[3].search('original monitor'))
+            found_h4 = len(warehouses[4].search('original monitor'))
+            all_output = {1:found_h1, 2:found_h2, 3:found_h3, 4:found_h4}
+            output_true = data[1]['all_same_name_fun']
+            self.assertDictEqual(all_output, output_true)
+            with patch('builtins.input',side_effect=['test']):      
+                  user_search_infullmagazine = query2._Action2('original monitor')
+                  self.assertEqual(user_search_infullmagazine[1], data[1]['same_name_main_house'])
+            self.assertEqual( len(warehouses[1].stock),warehouses[1].occupancy)
+            self.assertEqual( len(warehouses[2].stock), warehouses[2].occupancy)
+            self.assertEqual( len(warehouses[3].stock),warehouses[3].occupancy)
+            self.assertEqual( len(warehouses[4].stock),warehouses[4].occupancy)
+
+      def test_employee_only(self):
+            with patch('builtins.input',side_effect=['Jeremy',2,'original monitor','yes','coppers',2, 'no']):
+                  answer=[]
+                  with mock_output(answer):
+                        employe_order = query2.order('yes','original monitor',11)
+            self.assertTrue(answer)
             
-                       
-            """  def test_menu_option(self):
-                        with mock_input('List all'):
-                              answer = query2._Menu()
-                              self.assertEqual(answer, 'select one action:\n1-List all \n2- Quit\n')
-                        """
-            
+
+                        
+
+
 if __name__ == "__main__":
       unittest.main()

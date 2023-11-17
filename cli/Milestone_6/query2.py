@@ -54,28 +54,33 @@ def _Confirm_Order(item_tobuy, item_disponible):
             return shoot_down(username)
       
 def shoot_down(username):
-      if session["need_login"]:
-            continue_ = input('You want to continue ? yes / no\n')
-            if continue_=='yes':
-                  return True
+      
+      continue_ = input('You want to continue ? yes / no\n')
+      if continue_=='yes':
+            return True
       print(f'\nThank you for your visit, {username}')
       return False
             
-def stock_sort(key, item=None, category_selected=None):
+def stock_sort(key, item_selected=None, category_selected=None):
       if key=='all':
-            tab_all=[list(i.values()) for i in stock]
-            return tab_all
-      elif key=='item' and item!=None:
-            d = dict()
-            for i in stock:
-                  i_item = ' '.join([i["state"], i["category"]]).lower()
-                  if i["warehouse"] in d.keys() and i_item==item:
-                        d[i["warehouse"]] +=1
-                  elif i_item==item:
-                        d[i["warehouse"]] = 1
+            all_warehouse =dict()
+            for item in stock:
+                  if item['warehouse'] in all_warehouse.keys():
+                        all_warehouse[item['warehouse']].append(item)
+                  else:
+                        all_warehouse[item['warehouse']] = [item]
+            return all_warehouse
+      elif key=='item' and item_selected!=None:
+            item_found = dict()
+            for item in stock:
+                  name_item = ' '.join([item["state"], item["category"]]).lower()
+                  if item["warehouse"] in item_found.keys() and name_item == item_selected:
+                        item_found[item["warehouse"]] += 1
+                  elif name_item == item_selected:
+                        item_found[item["warehouse"]] = 1
                   else:
                         pass
-            return d
+            return item_found
       elif key=='category':
             d=dict()
             for i in stock:
@@ -96,9 +101,16 @@ def stock_sort(key, item=None, category_selected=None):
 
 
 def _Action1():
-      tab_all_val = stock_sort('all')
-      TAB = tabulate(tab_all_val,['state', 'category', 'warehouse', 'date of stock'])
-      return f'{TAB}\nItems :{len(tab_all_val)}'
+      all_warehouse = stock_sort('all')
+      tot_items = 0 
+      for list_item in all_warehouse.values():
+            tot_items += len(list_item)
+            for item in list_item:
+                  print(f"{item['state']}, {item['category']} {item['warehouse']}, {item['date_of_stock']} ")
+      count= [f'Total items in warehouse {k}:\n {len(v)}\n' for k, v in all_warehouse.items()]
+      out_tot=f"Listed {tot_items} items\n"
+      print(out_tot, *count)
+      return (out_tot, count)
 
 def _Action2(user_choose):
       res = stock_sort('item',user_choose)

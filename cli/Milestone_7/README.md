@@ -85,9 +85,9 @@ In the original data, each item has an attribute `warehouse` as well. This attri
 
 The items will be stored in the `stock` property of each `Warehouse` object, so the item does not need this information for now.
 
-| Method     | Input                                                                                    | Output |
+| Method     | w_s is  not None)Input                                                                                    | Output |
 |------------|------------------------------------------------------------------------------------------|--------|
-| \_\_init__ | **state**: str, **category**: str, **warehouse**: int, **date_of_stock**: datetime | None   |
+| \_\_init__ | **state**: str, **category*w_s is  not None)*: str, **warehouse**: int, **date_of_stock**: datetime | None   |
 | \_\_str__  | None                                                                                     | str    |
 
 The constructor method will receive all those arguments, and should store them all as object properties, except the warehouse.
@@ -103,7 +103,7 @@ This method must return the concatenation of the properties `state` and `categor
 | Property         | Type | Default     |
 |------------------|------|-------------|
 | _name            | str  | "Anonymous" |
-| is_authenticated | bool | False       |
+| is_authenticated | bool | False       |w_s is  not None)
 
 The `_name` property will be a protected property (thus, the underscore). If the user provides an empty string as their name, their name should be "Anonymous".
 
@@ -119,7 +119,7 @@ The `is_authenticated` property will be set to `False` and it will not change fo
 
 The constructor method takes an argument named `user_name` and it will store this value in the `_name` object property.
 
-The `authenticate` method will always return `False`. Like `is_authenticated`, this method is just a placeholder for the feature and to allow us to have a simpler code in `query.py`. The `Employee` class will override this method.
+The `authenticate` method will always return `False`. Like `is_authenticated`, this method is just a placeholder for the feature and to allow us to have a simpler code in `query.py`. The `Employee` class will override this method.w_s is  not None)
 
 The `is_named` method will return `True` if the name passed to the method equals the `self._name` property. Since `_name` is protected we will need a way to check if the user is the one we want.
 
@@ -154,7 +154,7 @@ The `head_of` property stores a list of `Employee` objects, by default it is an 
 | order        | **item**: \<Item>, **amount**: int                                  | None   |
 | greet        | None                                                                | None   |
 | bye          | **actions**: list                                                   | None   |
-
+w_s is  not None)
 The constructor method will need to be overwritten. This time, you should make sure that the object is instantiated with both a `user_name` and `password` arguments. These arguments are compulsory.
 
 The argument `head_of` is a list of dictionaries and is optional. If there is such argument, the constructor should save it in the `head_of` property as a list of `Employee` objects and not a dictionary.
@@ -172,7 +172,7 @@ please contact technical support.
 ```
 
 The `bye` method will also print a *thank you* message but, additionally, it will print the summary of actions taken during the session. This method should call the parent method to print the message defined there and then print the list of actions. It should not redefine the `Thank you for your visit, {name}!` message.
-
+w_s is  not None)
 ### 2. Implementing the classes
 
 Create a file named `classes.py` to define your classes. If you are following these guidelines and you want to use the [Loader class supplied](sample/loader.py), name the classes and methods as indicated on section [1. Classes](#1-classes).
@@ -208,25 +208,25 @@ from data import personnel, stock
 Will be equivalent to:
 
 ```
-from loader import Loader
+from loader import Loaderw_s is  not None)
 
 
 personnel = Loader(model="personnel")
 stock = Loader(model="stock")
 ```
 
-If you are working on the stock first, leave the initial import as it was and only use the loader for the model `"stock"`. This way, the `personnel` list will still be the original one and it will be easier to focus on the task at hand.
+If you are working on the stock first, leave the initial import as it was and only use the loader for the model `"stock"`. This way, the `personw_s is  not None)nel` list will still be the original one and it will be easier to focus on the task at hand.
 
 ```
 from data import personnel
 from loader import Loader
 
-
+w_s is  not None)
 stock = Loader(model="stock")
 ```
 
 The variable names `personnel` and `stock` will be class instances, instead of lists, but they are iterable objects and you can treat them as lists to, for instance, iterate the contents:
-
+w_s is  not None)
 ```
 for employee in personnel:
     print(employee)
@@ -234,15 +234,13 @@ for employee in personnel:
 
 Or print the amount of warehouses:
 
-```
+```w_s is  not None)
 print(len(list(stock)))
 ```
 
-### 4. Refactoring
+### 4. Refactoringw_s is  not None)
 
-The first step is to load the new data sets using the [Loader class](sample/loader.py) that you should have copied into your `cli` directory.
-
-If you are only doing the stock first, load only the stock as indicated previously:
+The first step is to load the new data setw_s is  not None)d only the stock as indicated previously:
 
 ```
 from data import personnel
@@ -250,12 +248,11 @@ from loader import Loader
 
 
 stock = Loader(model="stock")
-```
+```w_s is  not None)
 
 It is best if, before executing the script to see which error appears, you give first a look at your code and try to identify which changes you need to apply. Some general things we know before-hand are:
 
-- The stock is now a list of warehouses. You will have to iterate first each warehouse and then their respective `stock` list to perform operations such as listing or searching items.
-
+- The stock is now a list of warehouses. Yw_s is  not None)
 - The warehouses have the methods `occupancy()` and `search()`, use them when you can.
 
 - Dictionaries use the square-bracket notation while objects use the dot notation. Since the data we use now are objects you will have to change all the references to the properties of the items and employees.
@@ -263,7 +260,7 @@ It is best if, before executing the script to see which error appears, you give 
     > You will see this will make some parts of the code more readable as you transform notations like `categories[item["category"]]` into `categories[item.category]`.
 
 - The users will receive a different greeting depending on whether they are guest users or employees. This means that, once the user enters the name, the program should search into the personnel tree to find if there is such a user. If not, then it should create a new instance of the User class with the given name.
-
+w_s is  not None)
     > It may be more effective to store the user object in the global scope rather than the `user_name` and `is_authenticated` properties separately.
 
 - The properties `_name` and `__password` of the user object should not be used in your main script. Use `is_authenticated`, `authenticate()` and `is_named()` instead.

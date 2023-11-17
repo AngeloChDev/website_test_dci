@@ -1,68 +1,78 @@
 from typing import Any, Union
+from abc import ABC
 import datetime
-import unittest, os, sys
+import unittest, os, sys, typing
 cwd = os.getcwd()
 sys.path.append(cwd)
 from Milestone_7.data import personnel, stock
 
+
+      
+################################################################################################      
 logs=personnel
 guest_users = []
 class Warehouse:
       '''CLASS WAREHOUSE INVENTORY'''
-      _WAREHOUSES = set()
+      __WAREHOUSES = dict()
+      #__stock=list(set(w_s._Stock for w_s in _WAREHOUSES if len(_WAREHOUSES)>1))
       
-      def __init__(self, id:int=None):
-            if self.check_exist(id):
-                  return None
-            self._id = id
-            self.stock = []
-            Warehouse._WAREHOUSES.add(self) 
-             
+      def __init__(self, new_id:int=None, stock:list=[]):
+            
+            self._id =new_id
+            self.stock = self.check_exist(new_id) if  not None else stock 
+            #(self._id, self.stock )= (new_id, x) if(not None, not None)  else (new_id, stock)# if (not None, []) else (print(f"One warehouse with this {new_id} already existe"), None)
+            Warehouse.__WAREHOUSES[new_id]=self.stock #if not None else stock if new_id is not None and self.check_exist(new_id) is False else print('print') #breakpoint
+            
       @staticmethod
-      def check_exist(id:int) -> bool:
-            '''ON INIT METHOD CHECK IF A WAREHOUSE WITH THE SAME ID EXISTS'''
-            if len(Warehouse._WAREHOUSES)>0:
-                  for W in Warehouse._WAREHOUSES:
-                        
-                        if W._id ==id:
-                              return True
-            return False
+      def check_exist(search_id:int)->None:
+            '''ON INIT METHOD CHECK IF A WAREHOUSE WITH THE SAME ID EXISTS
+            if more one are registered check the is'''
+            if len(Warehouse.__WAREHOUSES.items())>0:
+                  if search_id in Warehouse.__WAREHOUSES.keys():
+                        return Warehouse.__WAREHOUSES[search_id]
+            return []
+      @classmethod
+      @property
+      def __stock__(cls)->list:
+            __house_stock__= []
+            for h in list(Warehouse.__WAREHOUSES.values()):
+                  __house_stock__.extend(h)
+            return __house_stock__
       
       def add_item(self, item:object) -> list:
-            '''check if the item is already in the warehouse invntory'''
+            '''Check if the item is already in the Main-Warehouse invntory add if Not'''
             exist=False
-            for W in Warehouse._WAREHOUSES:
-                  if item in W.stock :
-                        exist=True
-                        return f'This item is already stored in warehouse {W._id}'
-            if not exist:
+            s=Warehouse.__stock__ 
+            #for W in Warehouse._WAREHOUSES:
+            if item in s:
+                  return print(f'This item is already stored in warehouse{item.values}')
+            else:
                   self.stock.append(item)
-                  return self.stock 
-            
+                  Warehouse.__WAREHOUSES[self._id]=self.stock
+                  return True             
+      @property      
       def occupancy(self)->int:
-            '''Return lenght stock of self warehouse '''
+            '''Return lenght stock of self warehouse instance '''
             return len(self.stock)
       
-      def search(self, search_term:str)->list:
-            output=[]
-            term = search_term.lower()
-            for itm in self.stock:
-                  if term in itm.values() :
-                        output.append(itm)
-            return output
-                   
-class Item:       
-      def __init__(self,  state:str,category:str, date_of_stock:datetime ,*args, **kwargs)-> None:
+      def search(self, name_item:str)->list:
+            name_item = name_item.lower()
+            output = [item for item in self.stock if item.is_name(name_item) or name_item==item.values[2]]
+            return output 
+           
+class Item:
+      def __init__(self, state:str, category:str, date_of_stock:datetime)-> None:
             self.state = state
             self.category = category
-            self.date_of_stock = date_of_stock
-            
-      def values(self):
-            return [self.state.lower(), self.category.lower(), self.date_of_stock]
-      
+            self.date_of_stock = date_of_stock     
+      @property      
+      def values(self)->tuple:
+            return self.state.lower(), self.category.lower(), self.date_of_stock
+      def is_name(self, name:str)->bool:
+            return bool(name.lower()==self.__str__().lower())
       def __str__(self) -> str:
             return f'{self.state} {self.category}'
-
+      
 class User:
       def __init__(self, user_name:str='Anonymous', password:str=None, is_authenticated:bool=False):
             self._name = user_name if user_name not in [None, '', ' '] else 'Anonymous'
@@ -82,24 +92,25 @@ class User:
       
       def greet(self)->None:
             self.__actions.append('You greetings')
-            return f"Hello, {self._name}!\nWelcome to our Warehouse Database.\nIf you don't find what you are looking for,\nplease ask one of our staff members to assist you."
+            return print(f"Hello, {self._name}!\nWelcome to our Warehouse Database.\nIf you don't find what you are looking for,\nplease ask one of our staff members to assist you.")
 
       def bye(self)->str:
             self.__actions.append('You leaving the software')
             if self.is_authenticated is not True:
                   self.__actions=[]
-                  return "Thank you"
+                  return print("Thank you")
             else:
                   print('Your action in this session',*[i for i in self.__actions ], sep='\n')
                   self.__actions=[]
-                  return f"Thank you {self._name}"
-      
+                  return print(f"Thank you {self._name}")
+            
 class Employee(User):
       
       def __init__(self,user_name:str=None, password:str=None, head_of:list=[], is_authenticated:bool=False):
             super().__init__(user_name, password, is_authenticated)
             self.__actions = []
             self.head_of = head_of if user_name is not None  else None
+            
       
       def authenticate(self, password:str, list_employee:list=logs)-> bool:
             try:
@@ -119,39 +130,10 @@ class Employee(User):
             
       def order(self, item:Any, amount:int)->None:
             if self.is_authenticated is not True:
-                  return 'Need authentication before order'
+                  return print('Need authentication before order')
             self.__actions.append(f"You ordered {item.state} {item.category} for {amount}")
-            return f"Your order {' '.join([item.state, item.category])} {amount}"
+            return print(f"Your order {' '.join([item.state, item.category])} {amount}")
       
       def greet(self)->str:
             self.__actions.append("You are used the greet mode")
-            return f"Hello, {self._name}!\nIf you experience a problem with the system,\nplease contact technical support."
-         
-
-'''      
-e = Employee('Boris')
-print(e.is_authenticated) 
-e.authenticate('docker')
-print(e.is_authenticated) '''
-"""L=[]
-for i in range(1,5):
-      w= Warehouse(i)
-      L.append(w)
-I=[Item(**i) for i in stock]
-
-for x in L:
-      for j in stock:
-            if x._id==j['warehouse']:
-                  x.add_item(Item(**j))
-
-for k in L:
-      if k._id==4:
-            
-            for o in k.stock:
-                  print(o,sep='\n')
-
-            print(k.occupancy())
-            
-            print(k.search('exceptional'))
-
-"""
+            return print(f"Hello, {self._name}!\nIf you experience a problem with the system,\nplease contact technical support.")
