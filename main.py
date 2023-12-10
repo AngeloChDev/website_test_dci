@@ -4,7 +4,7 @@ app =Flask(__name__, template_folder=".")
 app.config['SECRET_KEY'] = 'your secret key'
 
 
-@app.route("/sign", methods=["GET","POST"])
+@app.route("/website_test_dci/sign", methods=["GET","POST"])
 def index():
       email=""
       if request.method=="POST":
@@ -13,7 +13,6 @@ def index():
             doit(email)
             return render_template("page2.html",email=email)
       return render_template('index.html',email=email)
-      #return render_template('index.html')
 
 
 
